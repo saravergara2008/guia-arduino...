@@ -1,0 +1,14 @@
+// El pin 13 es donde está conectado el LED en tu placa
+const int ledPin = 13;
+
+void setup() {
+  // Configura el pin 13 como una salida (OUTPUT)
+  pinMode(ledPin, OUTPUT);
+}
+
+void loop() {
+  digitalWrite(ledPin, HIGH); // Enciende el LED
+  delay(1000);                // Espera 1 segundo (1000 milisegundos)
+  digitalWrite(ledPin, LOW);  // Apaga el LED
+  delay(1000);                // Espera 1 segundo
+}
