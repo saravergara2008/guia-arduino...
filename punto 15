@@ -1,0 +1,44 @@
+// Definición de pines para el sensor HC-SR04
+const int pinTrigger = 12; // Pin digital para enviar el pulso ultrasónico
+const int pinEcho = 11;    // Pin digital para recibir el eco
+
+// Variables para el cálculo
+long duracion;
+int distancia;
+
+void setup() {
+  // Inicializamos el puerto serial a 9600 baudios
+  Serial.begin(9600);
+  
+  // Configuración de los pines del sensor
+  pinMode(pinTrigger, OUTPUT); // El Trigger envía el pulso (Salida)
+  pinMode(pinEcho, INPUT);     // El Echo recibe el pulso (Entrada)
+  
+  // Aseguramos que el Trigger inicie apagado
+  digitalWrite(pinTrigger, LOW);
+}
+
+void loop() {
+  // 1. Generamos un pulso limpio de 10 microsegundos en el Trigger
+  digitalWrite(pinTrigger, LOW);
+  delayMicroseconds(2);
+  digitalWrite(pinTrigger, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(pinTrigger, LOW);
+  
+  // 2. Medimos el tiempo (en microsegundos) que tarda en regresar el eco
+  duracion = pulseIn(pinEcho, HIGH);
+  
+  // 3. Calculamos la distancia en centímetros
+  // La velocidad del sonido es 343 m/s (o 0.0343 cm/us)
+  // Dividimos entre 2 porque el sonido hace el viaje de ida y vuelta
+  distancia = duracion * 0.0343 / 2;
+  
+  // 4. Mostramos la medición en el puerto serial
+  Serial.print("Distancia medida: ");
+  Serial.print(distancia);
+  Serial.println(" cm");
+  
+  // Pausa de 500 milisegundos antes de la siguiente lectura
+  delay(500);
+}
