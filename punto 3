@@ -1,0 +1,30 @@
+// Declaración de las constantes para los pines de los LEDs
+const int ledRojo = 2;
+const int ledAmarillo = 4;
+const int ledVerde = 16;
+
+void setup() {
+  // Inicialización de los pines digitales como salidas (OUTPUT)
+  pinMode(ledRojo, OUTPUT);
+  pinMode(ledAmarillo, OUTPUT);
+  pinMode(ledVerde, OUTPUT);
+}
+
+void loop() {
+  // 1. Enciende el LED verde por 7 segundos
+  digitalWrite(ledVerde, HIGH);
+  delay(7000);
+  
+  // 2. Apaga el LED verde y enciende el LED amarillo por 3 segundos
+  digitalWrite(ledVerde, LOW);
+  digitalWrite(ledAmarillo, HIGH);
+  delay(3000);
+  
+  // 3. Apaga el LED amarillo y enciende el LED rojo por 10 segundos
+  digitalWrite(ledAmarillo, LOW);
+  digitalWrite(ledRojo, HIGH);
+  delay(10000);
+  
+  // 4. Apaga el LED rojo (el ciclo se repite volviendo a encender el verde)
+  digitalWrite(ledRojo, LOW);
+}
