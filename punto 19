@@ -1,0 +1,15 @@
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+// Configuración del tamaño de la pantalla OLED (0.96'' es típicamente 128x64)
+#define SCREEN_WIDTH 128 
+#define SCREEN_HEIGHT 64 
+
+// Declaración del objeto para la pantalla conectada por I2C (pin RESET no utilizado = -1)
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+
+// Mapa de bits (Bitmap) del logo del SENA optimizado a 32x32 píxeles
+const unsigned char logoSena32x32 [] PROGMEM = {
+  0x00, 0x1f, 0xf8, 0x00, 0x00, 0x7f, 0xfe, 0x00, 0x00, 0xf
