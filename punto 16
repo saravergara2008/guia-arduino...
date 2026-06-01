@@ -1,0 +1,40 @@
+// Incluimos la librería para controlar la pantalla LCD
+#include <LiquidCrystal.h>
+
+// Inicializamos la librería con los números de los pines de la interfaz:
+// RS, Enable, D4, D5, D6, D7
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+// Reemplaza este texto con tu nombre completo
+String miNombre = "Tu Nombre Completo"; 
+
+void setup() {
+  // Configuramos el número de columnas (16) y filas (2) del LCD
+  lcd.begin(16, 2);
+}
+
+void loop() {
+  // --- PASO 1: Mostrar el nombre en la fila superior de forma fija ---
+  lcd.clear();
+  lcd.setCursor(0, 0); // Fila superior (Columna 0, Fila 0)
+  lcd.print("Mi Nombre:");
+  delay(2000); // Muestra el mensaje estático por 2 segundos
+  
+  // --- PASO 2: Animación de izquierda a derecha ---
+  // Desplazamos el texto hacia la derecha usando un ciclo for
+  // 16 posiciones es el ancho de la pantalla
+  for (int posicion = 0; posicion < 16; posicion++) {
+    lcd.clear();
+    
+    // Dejamos el indicador fijo arriba (opcional)
+    lcd.setCursor(0, 0);
+    lcd.print("Animacion:");
+    
+    // Ponemos el cursor en la fila inferior (Fila 1) y en la posición móvil
+    lcd.setCursor(posicion, 1);
+    lcd.print(miNombre);
+    
+    // Controla la velocidad de la animación (menor número = más rápido)
+    delay(300); 
+  }
+}
