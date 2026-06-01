@@ -1,0 +1,49 @@
+// Definición de pines para los 4 LEDs
+const int ledRojo = 13;
+const int ledVerde = 12;
+const int ledAzul = 11;
+const int ledAmarillo = 10;
+
+// Definición del pin para el pulsador
+const int pinBoton = 7;
+
+void setup() {
+  // Configurar los pines de los LEDs como salidas
+  pinMode(ledRojo, OUTPUT);
+  pinMode(ledVerde, OUTPUT);
+  pinMode(ledAzul, OUTPUT);
+  pinMode(ledAmarillo, OUTPUT);
+  
+  // Configurar el pin del botón como entrada
+  pinMode(pinBoton, INPUT);
+}
+
+void loop() {
+  // Variable para determinar la velocidad del delay
+  int velocidad;
+
+  // Leer el estado del botón (HIGH si está presionado, LOW si no)
+  if (digitalRead(pinBoton) == HIGH) {
+    velocidad = 100; // Si presionas el botón, va muy rápido (100 ms)
+  } else {
+    velocidad = 500; // Si no lo presionas, va a velocidad normal (500 ms)
+  }
+
+  // --- Secuencia de encendido y apagado consecutivo ---
+  
+  digitalWrite(ledRojo, HIGH);
+  delay(velocidad);
+  digitalWrite(ledRojo, LOW);
+  
+  digitalWrite(ledVerde, HIGH);
+  delay(velocidad);
+  digitalWrite(ledVerde, LOW);
+  
+  digitalWrite(ledAzul, HIGH);
+  delay(velocidad);
+  digitalWrite(ledAzul, LOW);
+  
+  digitalWrite(ledAmarillo, HIGH);
+  delay(velocidad);
+  digitalWrite(ledAmarillo, LOW);
+}
