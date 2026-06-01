@@ -1,0 +1,27 @@
+// Definimos el pin PWM al que está conectado el motor (o el controlador)
+const int pinMotor = 9; 
+
+void setup() {
+  // Configurar el pin del motor como salida
+  pinMode(pinMotor, OUTPUT);
+}
+
+void loop() {
+  // --- ACELERACIÓN GRADUAL ---
+  // El ciclo va desde 0 (detenido) hasta 255 (máxima velocidad)
+  for (int velocidad = 0; velocidad <= 255; velocidad++) {
+    analogWrite(pinMotor, velocidad); // Envía la señal PWM al motor
+    delay(20);                        // Pequeña pausa para que el cambio sea suave
+  }
+  
+  delay(2000); // Mantiene el motor a máxima velocidad por 2 segundos
+
+  // --- DESACELERACIÓN GRADUAL ---
+  // El ciclo va desde 255 (máxima velocidad) hasta 0 (detenido)
+  for (int velocidad = 255; velocidad >= 0; velocidad--) {
+    analogWrite(pinMotor, velocidad); // Reduce la señal PWM
+    delay(20);                        // Pequeña pausa
+  }
+  
+  delay(2000); // Mantiene el motor detenido por 2 segundos antes de reiniciar
+}
