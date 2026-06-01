@@ -1,0 +1,26 @@
+// Definimos los pines digitales para los 6 LEDs
+const int pinesLEDs[] = {2, 3, 4, 5, 6, 7};
+const int totalLEDs = 6;
+
+void setup() {
+  // Configuramos los 6 pines como salidas (OUTPUT) usando un ciclo
+  for (int i = 0; i < totalLEDs; i++) {
+    pinMode(pinesLEDs[i], OUTPUT);
+  }
+}
+
+void loop() {
+  // Secuencia de ida: Enciende del primero al último
+  for (int i = 0; i < totalLEDs; i++) {
+    digitalWrite(pinesLEDs[i], HIGH); // Enciende el LED actual
+    delay(200);                       // Velocidad del movimiento (200 ms)
+    digitalWrite(pinesLEDs[i], LOW);  // Apaga el LED actual
+  }
+
+  // Secuencia de vuelta: Enciende del penúltimo al segundo para reiniciar el ciclo
+  for (int i = totalLEDs - 2; i > 0; i--) {
+    digitalWrite(pinesLEDs[i], HIGH);
+    delay(200);
+    digitalWrite(pinesLEDs[i], LOW);
+  }
+}
