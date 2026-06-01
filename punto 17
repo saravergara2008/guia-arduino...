@@ -1,0 +1,63 @@
+// Incluimos las librerías necesarias
+#include <Wire.h> 
+#include <LiquidCrystal_I2C.h>
+#include <DHT.h>
+
+// --- CONFIGURACIÓN DEL SENSOR DHT ---
+#define DHTPIN 2          // Pin digital conectado al pin DATA del sensor DHT
+#define DHTTYPE DHT11     // Cambiar a DHT22 si estás usando ese modelo
+DHT dht(DHTPIN, DHTTYPE);
+
+// --- CONFIGURACIÓN DE LA LCD I2C ---
+// Dirección típica I2C: 0x27 (en algunos modelos puede ser 0x3F). 16 columnas y 2 filas.
+LiquidCrystal_I2C lcd(0x27, 16, 2); 
+
+void setup() {
+  // Inicializamos el sensor DHT
+  dht.begin();
+  
+  // Inicializamos la pantalla LCD I2C
+  lcd.init();
+  lcd.backlight(); // Enciende la luz de fondo de la pantalla
+  
+  // Mensaje de bienvenida temporal
+  lcd.setCursor(0, 0);
+  lcd.print("Iniciando...");
+  lcd.setCursor(0, 1);
+  lcd.print("Sensor DHT");
+  delay(2000);
+  lcd.clear();
+}
+
+void loop() {
+  // Leer la humedad relativa (porcentaje)
+  float humedad = dht.readHumidity();
+  // Leer la temperatura en grados Celsius
+  float temperatura = dht.readTemperature();
+
+  // Verificar si alguna lectura falló para evitar mostrar datos basura
+  if (isnan(humedad) || isnan(temperatura)) {
+    lcd.setCursor(0, 0);
+    lcd.print("Error de lectura");
+    lcd.setCursor(0, 1);
+    lcd.print("REVISE SENSOR  ");
+    return;
+  }
+
+  // --- Mostrar datos en la LCD ---
+  
+  // Fila 1: Temperatura
+  lcd.setCursor(0, 0);
+  lcd.print("Temp: ");
+  lcd.print(temperatura, 1); // Muestra 1 decimal
+  lcd.print(" C  ");       // Espacios extra para limpiar residuos de texto anterior
+  
+  // Fila 2: Humedad
+  lcd.setCursor(0, 1);
+  lcd.print("Humedad: ");
+  lcd.print(humedad, 1);     // Muestra 1 decimal
+  lcd.print(" %  ");
+  
+  // El sensor DHT requiere al menos 2 segundos entre lecturas para ser preciso
+  delay(2000); 
+}
