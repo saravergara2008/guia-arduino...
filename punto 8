@@ -1,0 +1,21 @@
+// Potenciómetro y un LED, medidas de lectura y escritura
+// Nombre: Coloca tu nombre completo
+
+int Lectura = 0; //Crea variable para lectura
+int Salida = 0;  //Crea variable para salida
+
+void setup(){
+  pinMode(A0, INPUT);   //Define pin de lectura
+  pinMode(9, OUTPUT);   //Define pin de salida
+  Serial.begin(9600);   //Inicia puerto serie en frecuencia 9600
+}
+
+void loop(){
+  Lectura = analogRead(A0); //La medida del potenciómetro la almacena en variable
+  Salida = map(Lectura, 0, 1023, 0, 255); //Se hace proporción para salida de led
+  analogWrite(9, Salida); //Envía la intensidad al led
+  
+  Serial.print("lectura = "); Serial.print(Lectura); //Envía el valor de lectura al puerto serie
+  Serial.print(" -> Led = "); Serial.println(Salida); //Envía el valor de salida al puerto serie
+  delay(2); // espera 2ms
+}
