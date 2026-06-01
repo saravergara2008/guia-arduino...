@@ -1,0 +1,99 @@
+// --- CONFIGURACIÓN SENSOR ULTRASÓNICO ---
+const int pinTrigger = 12; // Pin digital para enviar el pulso
+const int pinEcho = 11;    // Pin digital para recibir el eco
+
+// --- CONFIGURACIÓN MOTORES DC (A través de Puente H L293D / L298N) ---
+// Motor Izquierdo
+const int motorIzq1 = 4;   // Entrada 1 del Puente H
+const int motorIzq2 = 5;   // Entrada 2 del Puente H
+// Motor Derecho
+const int motorDer1 = 6;   // Entrada 3 del Puente H
+const int motorDer2 = 7;   // Entrada 4 del Puente H
+
+// --- VARIABLES Y UMBRAL ---
+long duracion;
+int distancia;
+const int umbralDistancia = 20; // Umbral en centímetros para actuar
+
+void setup() {
+  // Inicializar puerto serial para telemetría
+  Serial.begin(9600);
+  
+  // Configuración de pines del sensor
+  pinMode(pinTrigger, OUTPUT);
+  pinMode(pinEcho, INPUT);
+  digitalWrite(pinTrigger, LOW);
+  
+  // Configuración de pines de los motores
+  pinMode(motorIzq1, OUTPUT);
+  pinMode(motorIzq2, OUTPUT);
+  pinMode(motorDer1, OUTPUT);
+  pinMode(motorDer2, OUTPUT);
+  
+  // Asegurar que el coche inicie detenido
+  detenerCarrito();
+}
+
+void loop() {
+  // 1. Obtener la distancia actual mediante el HC-SR04
+  digitalWrite(pinTrigger, LOW);
+  delayMicroseconds(2);
+  digitalWrite(pinTrigger, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(pinTrigger, LOW);
+  
+  duracion = pulseIn(pinEcho, HIGH);
+  distancia = duracion * 0.0343 / 2;
+  
+  // Imprimir en Monitor Serie para depuración
+  Serial.print("Distancia: ");
+  Serial.print(distancia);
+  Serial.println(" cm");
+
+  // Filtro para lecturas fuera de rango (0 significa error o infinito)
+  if (distancia == 0) {
+    distancia = 999; 
+  }
+
+  // 2. Tomar decisiones según el umbral calculado
+  if (distancia <= umbralDistancia) {
+    // Si hay un obstáculo/guía cerca, AVANZA
+    Serial.println("-> Objetivo detectado: Avanzando en linea recta.");
+    avanzarRecto();
+  } 
+  else {
+    // Si no ubica nada, GIRA SUAVEMENTE para buscarlo
+    Serial.println("-> Buscando... Girando suavemente.");
+    girarSuave();
+  }
+  
+  delay(100); // Pequeña pausa de estabilidad antes del próximo ciclo
+}
+
+// --- FUNCIONES DE MOVIMIENTO DEL CARRITO ---
+
+void avanzarRecto() {
+  // Motor Izquierdo hacia adelante
+  digitalWrite(motorIzq1, HIGH);
+  digitalWrite(motorIzq2, LOW);
+  // Motor Derecho hacia adelante
+  digitalWrite(motorDer1, HIGH);
+  digitalWrite(motorDer2, LOW);
+}
+
+void girarSuave() {
+  // Para un giro suave, hacemos que el motor izquierdo avance 
+  // y el motor derecho se detenga (o vaya en reversa)
+  digitalWrite(motorIzq1, HIGH);
+  digitalWrite(motorIzq2, LOW);
+  
+  digitalWrite(motorDer1, LOW);
+  digitalWrite(motorDer2, LOW); // Detener rueda derecha provoca un pivot suave
+}
+
+void detenerCarrito() {
+  digitalWrite(motorIzq1, LOW);
+  digitalWrite(motorIzq2, LOW);
+  digitalWrite(motorDer1, LOW);
+  digitalWrite(motorDer2, LOW);
+}
