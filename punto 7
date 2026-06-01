@@ -1,0 +1,20 @@
+// Definimos el pin analógico donde está conectada la pata central del potenciómetro
+const int pinPotenciometro = A0;
+int valor = 0; // Variable para almacenar la lectura
+
+void setup() {
+  // Inicializamos la comunicación serie a 9600 bps para ver los datos en la PC
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Leemos el valor del pin analógico A0
+  valor = analogRead(pinPotenciometro);
+  
+  // Imprimimos el valor en el Monitor Serie
+  Serial.print("Valor del potenciometro: ");
+  Serial.println(valor);
+  
+  // Una pequeña pausa de 100 milisegundos para que la pantalla no se sature
+  delay(100); 
+}
