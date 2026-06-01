@@ -1,0 +1,73 @@
+// Definición de pines para los 6 LEDs
+const int pinesLEDs[] = {13, 12, 11, 10, 9, 8};
+const int numLEDs = 6;
+
+// Definición de pines para los 3 pulsadores
+const int boton1 = 4;
+const int boton2 = 3;
+const int boton3 = 2;
+
+void setup() {
+  // Configurar pines de LEDs como salidas
+  for (int i = 0; i < numLEDs; i++) {
+    pinMode(pinesLEDs[i], OUTPUT);
+  }
+  
+  // Configurar pines de botones como entradas
+  pinMode(boton1, INPUT);
+  pinMode(boton2, INPUT);
+  pinMode(boton3, INPUT);
+}
+
+void loop() {
+  // Leer el estado de los tres botones
+  int estadoBoton1 = digitalRead(boton1);
+  int estadoBoton2 = digitalRead(boton2);
+  int estadoBoton3 = digitalRead(boton3);
+
+  // --- BOTÓN 1: Secuencia de ida y vuelta (Auto Fantástico) ---
+  if (estadoBoton1 == HIGH) {
+    for (int i = 0; i < numLEDs; i++) {
+      digitalWrite(pinesLEDs[i], HIGH);
+      delay(100);
+      digitalWrite(pinesLEDs[i], LOW);
+    }
+    for (int i = numLEDs - 2; i > 0; i--) {
+      digitalWrite(pinesLEDs[i], HIGH);
+      delay(100);
+      digitalWrite(pinesLEDs[i], LOW);
+    }
+  }
+  
+  // --- BOTÓN 2: Parpadeo de todos los LEDs al mismo tiempo ---
+  else if (estadoBoton2 == HIGH) {
+    // Encender todos
+    for (int i = 0; i < numLEDs; i++) {
+      digitalWrite(pinesLEDs[i], HIGH);
+    }
+    delay(200);
+    // Apagar todos
+    for (int i = 0; i < numLEDs; i++) {
+      digitalWrite(pinesLEDs[i], LOW);
+    }
+    delay(200);
+  }
+  
+  // --- BOTÓN 3: Enciende desde los extremos hacia el centro ---
+  else if (estadoBoton3 == HIGH) {
+    for (int i = 0; i < 3; i++) {
+      digitalWrite(pinesLEDs[i], HIGH);                  // LED desde la izquierda
+      digitalWrite(pinesLEDs[numLEDs - 1 - i], HIGH);     // LED desde la derecha
+      delay(200);
+      digitalWrite(pinesLEDs[i], LOW);
+      digitalWrite(pinesLEDs[numLEDs - 1 - i], LOW);
+    }
+  }
+  
+  // --- ESTADO POR DEFECTO: Si no se presiona nada, todo apagado ---
+  else {
+    for (int i = 0; i < numLEDs; i++) {
+      digitalWrite(pinesLEDs[i], LOW);
+    }
+  }
+}
