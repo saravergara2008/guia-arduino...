@@ -1,0 +1,47 @@
+// Definición de pines
+const int pinMotor = 9;  // Pin PWM para controlar la velocidad del motor
+const int pinBoton = 2;  // Pin digital para el botón del joystick (SW)
+
+// Variables de control
+int velocidad = 0;          // Velocidad actual del motor (0 a 255)
+bool ascendente = true;     // Determina la dirección del cambio (true = sube, false = baja)
+int ultimoEstadoBoton = HIGH; // El botón en INPUT_PULLUP inicia en HIGH
+
+void setup() {
+  pinMode(pinMotor, OUTPUT);
+  
+  // Usamos INPUT_PULLUP para usar la resistencia interna del Arduino.
+  // El botón leerá LOW cuando sea presionado.
+  pinMode(pinBoton, INPUT_PULLUP); 
+}
+
+void loop() {
+  // 1. Leer el estado actual del botón del joystick
+  int estadoBoton = digitalRead(pinBoton);
+
+  // 2. Detectar si el botón fue presionado (Flanco de bajada: de HIGH a LOW)
+  if (estadoBoton == LOW && ultimoEstadoBoton == HIGH) {
+    ascendente = !ascendente; // Invierte el sentido del cambio de velocidad
+    delay(50); // Anti-rebote (debouncing) para evitar lecturas falsas
+  }
+  ultimoEstadoBoton = estadoBoton; // Guardar el estado para la siguiente iteración
+
+  // 3. Modificar la velocidad según el sentido actual (ascendente o descendente)
+  if (ascendente) {
+    velocidad++;
+    if (velocidad > 255) {
+      velocidad = 255; // Límite máximo de PWM
+    }
+  } else {
+    velocidad--;
+    if (velocidad < 0) {
+      velocidad = 0;   // Límite mínimo (detenido)
+    }
+  }
+
+  // 4. Aplicar la velocidad al motor
+  analogWrite(pinMotor, velocidad);
+
+  // Pequeña pausa para controlar qué tan rápido cambia la velocidad de forma natural
+  delay(15); 
+}
