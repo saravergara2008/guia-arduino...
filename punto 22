@@ -1,0 +1,40 @@
+// Definición de pines PWM para cada color del LED RGB
+const int pinRojo = 9;   // Canal Rojo
+const int pinVerde = 10; // Canal Verde
+const int pinAzul = 11;  // Canal Azul
+
+void setup() {
+  // Configurar los pines como salidas
+  pinMode(pinRojo, OUTPUT);
+  pinMode(pinVerde, OUTPUT);
+  pinMode(pinAzul, OUTPUT);
+}
+
+void loop() {
+  // 1. Color Rojo
+  asignarColor(255, 0, 0);
+  delay(1000);
+
+  // 2. Color Verde
+  asignarColor(0, 255, 0);
+  delay(1000);
+
+  // 3. Color Azul
+  asignarColor(0, 0, 255);
+  delay(1000);
+
+  // 4. Color Amarillo (Rojo + Verde)
+  asignarColor(255, 255, 0);
+  delay(1000);
+
+  // 5. Color Morado (Rojo + Azul)
+  asignarColor(128, 0, 128);
+  delay(1000);
+}
+
+// Función auxiliar para enviar los valores PWM al LED de forma ordenada
+void asignarColor(int valorRojo, int valorVerde, int valorAzul) {
+  analogWrite(pinRojo, valorRojo);
+  analogWrite(pinVerde, valorVerde);
+  analogWrite(pinAzul, valorAzul);
+}
