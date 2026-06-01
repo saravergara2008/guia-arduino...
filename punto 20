@@ -1,0 +1,50 @@
+// Definición de pines
+const int pinSensorGas = A0;  // Pin analógico donde se conecta la salida 'AO' del MQ-5
+const int pinBuzzer = 8;      // Pin digital para el Buzzer (Activo o Pasivo)
+
+// Configuración del umbral determinado para la detección de metano
+const int umbralMetano = 400; 
+
+void setup() {
+  // Inicializamos el puerto serie para monitorizar los niveles en tiempo real
+  Serial.begin(9600);
+  
+  // Configuración de pines
+  pinMode(pinSensorGas, INPUT);
+  pinMode(pinBuzzer, OUTPUT);
+  
+  // Aseguramos que el buzzer inicie apagado
+  digitalWrite(pinBuzzer, LOW);
+  
+  Serial.println("--- Sistema de Alarma de Gas MQ-5 Iniciado ---");
+  Serial.println("Estabilizando sensor...");
+  delay(3000); // Breve pausa de cortesía para la estabilización inicial
+}
+
+void loop() {
+  // 1. Leer el valor analógico del sensor de gas
+  int nivelGas = analogRead(pinSensorGas);
+  
+  // 2. Mostrar la lectura actual en el Monitor Serie
+  Serial.print("Concentracion de Gas: ");
+  Serial.print(nivelGas);
+  Serial.print(" / Umbral: ");
+  Serial.println(umbralMetano);
+  
+  // 3. Evaluar si se supera el umbral de seguridad
+  if (nivelGas > umbralMetano) {
+    Serial.println("¡ALERTA! Presencia de Metano detectada.");
+    
+    // Generar un tono intermitente de alarma (Funciona tanto para Buzzer Activo como Pasivo)
+    digitalWrite(pinBuzzer, HIGH);
+    delay(150);
+    digitalWrite(pinBuzzer, LOW);
+    delay(150);
+  } else {
+    // Si los niveles son normales, mantener el buzzer completamente apagado
+    digitalWrite(pinBuzzer, LOW);
+  }
+  
+  // Pequeña pausa entre muestreos
+  delay(300);
+}
