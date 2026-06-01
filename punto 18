@@ -1,0 +1,76 @@
+// Incluimos las librerías necesarias
+#include <Wire.h> 
+#include <LiquidCrystal_I2C.h>
+#include <DHT.h>
+
+// --- CONFIGURACIÓN DEL SENSOR DHT ---
+#define DHTPIN 2          // Pin digital conectado al pin DATA del sensor DHT
+#define DHTTYPE DHT11     // Cambiar a DHT22 si usas ese modelo
+DHT dht(DHTPIN, DHTTYPE);
+
+// --- CONFIGURACIÓN DE LA LCD I2C ---
+LiquidCrystal_I2C lcd(0x27, 16, 2); 
+
+// --- CONFIGURACIÓN DEL ACTUADOR DE POTENCIA ---
+const int pinVentilador = 9;    // Pin digital conectado a la base del transistor o relé
+const float temperaturaUmbral = 30.0; // Define aquí la temperatura de activación en °C
+
+void setup() {
+  // Inicializamos el sensor y la pantalla LCD
+  dht.begin();
+  lcd.init();
+  lcd.backlight();
+  
+  // Configurar el pin del ventilador como salida
+  pinMode(pinVentilador, OUTPUT);
+  digitalWrite(pinVentilador, LOW); // Aseguramos que inicie apagado
+  
+  // Mensaje de bienvenida
+  lcd.setCursor(0, 0);
+  lcd.print("Control Temp.");
+  lcd.setCursor(0, 1);
+  lcd.print("Ventilador listo");
+  delay(2000);
+  lcd.clear();
+}
+
+void loop() {
+  // Leer los valores de humedad y temperatura
+  float humedad = dht.readHumidity();
+  float temperatura = dht.readTemperature();
+
+  // Validación de lectura correcta del sensor
+  if (isnan(humedad) || isnan(temperatura)) {
+    lcd.setCursor(0, 0);
+    lcd.print("Error de lectura");
+    digitalWrite(pinVentilador, LOW); // Por seguridad, apagamos el motor en caso de error
+    return;
+  }
+
+  // --- CONTROL DEL VENTILADOR ---
+  if (temperatura > temperaturaUmbral) {
+    digitalWrite(pinVentilador, HIGH); // Activa el motor/ventilador
+  } else {
+    digitalWrite(pinVentilador, LOW);  // Desactiva el motor/ventilador
+  }
+
+  // --- VISUALIZACIÓN EN LA LCD ---
+  
+  // Fila 1: Temperatura actual y estado del ventilador (V:)
+  lcd.setCursor(0, 0);
+  lcd.print("T:");
+  lcd.print(temperatura, 1);
+  lcd.print("C ");
+  
+  lcd.setCursor(9, 0);
+  if (temperatura > temperaturaUmbral) {
+    lcd.print("[ON] ");
+  } else {
+    lcd.print("[OFF]");
+  }
+  
+  // Fila 2: Humedad actual y el umbral configurado (U:)
+  lcd.setCursor(0, 1);
+  lcd.print("H:");
+  lcd.print(humedad, 0);
+  lcd.print("% ");
